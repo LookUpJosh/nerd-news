@@ -144,11 +144,63 @@
 <meta property="og:image" content="https://lookupjosh.github.io/nerd-news/2026-10-30.png">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
+<style>
+  .rvote { margin-left: 8px; white-space: nowrap; }
+  .rvote button { background: none; border: 1px solid transparent; border-radius: 4px; cursor: pointer;
+    font-size: .9rem; padding: 1px 6px; opacity: .75; color: inherit; }
+  .rvote button:hover { opacity: 1; border-color: var(--ns-muted); }
+  .rvote button.on { opacity: 1; border-color: var(--ns-accent); }
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const API = "https://nerd-news-votes.lookupjosh.workers.dev";
+  let me = null, mine = {};
+  try {
+    me = localStorage.getItem("nn-voter");
+    if (!me) { me = crypto.randomUUID(); localStorage.setItem("nn-voter", me); }
+    mine = JSON.parse(localStorage.getItem("nn-votes") || "{}");
+  } catch (e) { me = crypto.randomUUID(); }
+  const boxes = {};
+  document.querySelectorAll("article.story").forEach(st => {
+    const a = st.querySelector("h3 a"), meta = st.querySelector(".meta");
+    if (!a || !meta) return;
+    const box = document.createElement("span");
+    box.className = "rvote";
+    box.innerHTML = '<button data-v="1" title="Good pick">👍 <b></b></button>' +
+                    '<button data-v="-1" title="Not for me">👎 <b></b></button>';
+    meta.appendChild(box);
+    (boxes[a.getAttribute("href")] ||= []).push(box);
+  });
+  const show = (url, c) => (boxes[url] || []).forEach(box => box.querySelectorAll("button").forEach(b => {
+    const v = +b.dataset.v, n = v > 0 ? c.up : c.down;
+    b.querySelector("b").textContent = n ? n : "";
+    b.classList.toggle("on", mine[url] === v);
+  }));
+  Object.keys(boxes).forEach(u => show(u, {up: 0, down: 0}));
+  fetch(API + "/counts", {method: "POST", headers: {"Content-Type": "application/json"},
+                         body: JSON.stringify({urls: Object.keys(boxes)})})
+    .then(r => r.json()).then(all => Object.keys(boxes).forEach(u => show(u, all[u] || {up: 0, down: 0})))
+    .catch(() => {});
+  document.addEventListener("click", e => {
+    const b = e.target.closest(".rvote button");
+    if (!b) return;
+    const url = b.closest("article.story").querySelector("h3 a").getAttribute("href");
+    const v = mine[url] === +b.dataset.v ? 0 : +b.dataset.v;   // tap again to take it back
+    fetch(API + "/vote", {method: "POST", headers: {"Content-Type": "application/json"},
+                          body: JSON.stringify({url, voter: me, vote: v})})
+      .then(r => r.json()).then(c => {
+        if (v) mine[url] = v; else delete mine[url];
+        try { localStorage.setItem("nn-votes", JSON.stringify(mine)); } catch (e) {}
+        show(url, c);
+      }).catch(() => {});
+  });
+});
+</script>
 </head>
 <body class="share">
 <header>
   <h1>Nerd News</h1>
-  <div class="dateline">Friday, October 30, 2026 · last 7 days · updated 12:33 PM</div>
+  <div class="dateline">Friday, October 30, 2026 · last 7 days · updated 4:11 PM</div>
 </header>
 <nav>
 

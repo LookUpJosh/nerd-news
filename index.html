@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 <body class="share">
 <header>
   <h1>Nerd News</h1>
-  <div class="dateline">Saturday, October 31, 2026 · last 7 days · updated 2:07 PM</div>
+  <div class="dateline">Saturday, October 31, 2026 · last 7 days · updated 5:09 PM</div>
 </header>
 <nav>
 
@@ -292,7 +292,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 <main>
 <section id="edition" class="section">
   
-  <p class="lede">Today&#x27;s edition covers rare-earth supply pressure and defense demand for metal 3D printing, alongside new work on event cameras, spatiotemporal monitoring, magnetism modeling, and statistical physics. Most of the magnetism and manufacturing items are early-stage or computational, while the policy items are known only from headlines and still need confirmation.</p><p class="nerdle-teaser"><a href="#nerdle">🧩 Play today's Daily Nerdle ↓</a></p>
+  <p class="lede">Today&#x27;s edition covers rare-earth supply pressure and defense demand for metal 3D printing, alongside new work on event cameras, spatiotemporal monitoring, magnetism modeling, and statistical physics. Most of the magnetism and manufacturing items are early-stage or computational, while the policy items are known only from headlines and still need confirmation.</p><p class="nerdle-teaser"><a href="#nerdle">🧩 Play today's Daily Nerdle ↓</a></p><section class="radio">
+  <div class="radio-top"><span class="radio-title">📻 Nerd News Radio</span><span class="radio-len">2:44</span></div>
+  <audio controls preload="none" src="radio/2026-10-31.mp3"></audio>
+  <details><summary>Read the transcript</summary><h4>Open</h4><p><b>Ray:</b> Good morning, nerds. It&#x27;s Saturday, October thirty-first, twenty twenty-six. Happy Halloween. Today&#x27;s lead is a transformer model that watches metal 3D printing layer by layer, and asks how neighboring layers affect each other.</p><h4>Lead story</h4><p><b>Ray:</b> Our lead is about metal additive manufacturing. The abstract reports a spatiotemporal graph transformer. It combines in-situ sensor data, process settings, and part geometry. The goal is to predict build quality while modeling how neighboring layers interact, instead of judging each layer alone.</p><p><b>Ada:</b> Nice idea. But a referee has two questions. How were the quality labels defined? And how were the training and test data split?</p><p><b>Ray:</b> The summary doesn&#x27;t say. Those two details decide how much to trust the results, so they&#x27;re the first things to check in the full paper.</p><p><b>Ray:</b> Why it matters: parts are built layer upon layer, so capturing cross-layer effects is the whole appeal of this approach.</p><h4>Quick hits</h4><p><b>Ray:</b> First, 3D Printing Industry reports that Nikon SLM Solutions won a Department of War contract. It covers customized laser powder bed fusion systems aimed at Tomahawk missile mid-bodies. The snippet doesn&#x27;t say whether in-situ monitoring is part of the work.</p><p><b>Ada:</b> Next, compressed magnetic moment tensor potentials. These are machine-learned atomic models with one and a half to three times fewer parameters. The abstract reports they match the original on magnetic, structural, and vibrational properties of iron aluminum and chromium nitride. It doesn&#x27;t address strongly correlated or f-electron systems.</p><p><b>Ray:</b> And Environmental Leader reports a rare-earth trade truce was extended, while legal deadlines remain in place. Only the headline is available, so the specific deadlines are unconfirmed. Still, a political truce and a binding deadline are very different things for near-term supply.</p><h4>Weird physics corner</h4><p><b>Ray:</b> Picture a fluid pushed past its liquid-gas critical point. There is no sharp transition there. It just smoothly shifts from liquid-like to gas-like. Researchers have proposed crossover lines to mark the change, designed to respect Ising critical scaling. This abstract shows those requirements don&#x27;t single out one unique line.</p><p><b>Ada:</b> So the fluid is having an identity crisis, and we&#x27;re arguing about where to draw the dotted line.</p><p><b>Ray:</b> Pretty much. The lesson echoes finite-size scaling: pseudocritical points depend on how you define them. Nature gives a smooth blend, and we pick the ruler.</p><h4>Fun fact</h4><p><b>Ray:</b> Researchers report building a three-dimensional thermal cloak. It guides heat around an object instead of blocking it, so the object appears invisible to infrared cameras from nearly any direction.</p><p><b>Ada:</b> Built, or just simulated?</p><p><b>Ray:</b> Built and tested, the team says.</p><h4>Sign-off</h4><p><b>Ada:</b> Before you go, today&#x27;s Daily Nerdle quiz is waiting in the app. Test your nerd knowledge.</p><p><b>Ray:</b> This has been Nerd News Radio. Ad astra, nerds.</p></details>
+</section>
+<script>
+(() => {
+  const a = document.querySelector(".radio audio");
+  if (a && "mediaSession" in navigator) a.addEventListener("play", () => {
+    navigator.mediaSession.metadata = new MediaMetadata({title: "Nerd News Radio — 2026-10-31", artist: "Nerd News",
+      artwork: [{src: document.querySelector('link[rel="apple-touch-icon"]')?.href || "", sizes: "180x180", type: "image/png"}]});
+  }, {once: true});
+})();
+</script>
+<style>
+  .radio { border: 2px solid var(--ns-accent); border-radius: 12px; padding: 10px 16px; margin: 4px 0 18px;
+           background: color-mix(in srgb, var(--ns-accent) 8%, transparent); }
+  .radio-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .radio-title { font-weight: bold; color: var(--fg-bright); }
+  .radio-len { color: var(--fg-dim); font-size: .85rem; }
+  .radio audio { width: 100%; }
+  .radio details { margin-top: 8px; font-size: .9rem; }
+  .radio summary { cursor: pointer; color: var(--fg-dim); }
+  .radio h4 { margin: 12px 0 4px; color: var(--star); }
+  .radio p { margin: 4px 0; }
+</style>
   
   <div class="front"><article class="story lead has-fig">
   <h3><a href="https://arxiv.org/abs/2606.10227v1" target="_blank" rel="noopener">Spatiotemporal graph transformer predicts metal AM build quality across layers</a></h3>

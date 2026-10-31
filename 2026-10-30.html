@@ -205,11 +205,60 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+<style>
+  .alerts { text-align: center; margin: 4px 0 14px; font-size: .85rem; color: var(--fg-dim); }
+  .alerts button { background: none; color: inherit; border: 1px solid var(--ns-muted); border-radius: 999px;
+    padding: 4px 14px; cursor: pointer; font: inherit; }
+  .alerts button.on { border-color: var(--ns-accent); }
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const API = "https://nerd-news-votes.lookupjosh.workers.dev";
+  const box = document.createElement("div");
+  box.className = "alerts";
+  const lede = document.querySelector("#edition .lede");
+  if (!lede) return;
+  lede.after(box);
+  const iOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const installed = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+    if (iOS && !installed) box.textContent = "🔔 Want a morning alert? Tap Share → Add to Home Screen, then open Nerd News from your home screen.";
+    else box.remove();
+    return;
+  }
+  const reg = await navigator.serviceWorker.ready;
+  const key = await fetch(API + "/push/key").then(r => r.json()).then(j => j.key).catch(() => null);
+  if (!key) { box.remove(); return; }
+  const btn = document.createElement("button");
+  box.appendChild(btn);
+  const post = (path, sub) => fetch(API + path, {method: "POST", headers: {"Content-Type": "application/json"},
+                                                body: JSON.stringify({endpoint: sub.endpoint})});
+  const show = sub => {
+    btn.textContent = sub ? "🔔 Morning alert is on — tap to turn off" : "🔔 Get a morning alert when the paper is ready";
+    btn.classList.toggle("on", !!sub);
+  };
+  show(await reg.pushManager.getSubscription());
+  btn.addEventListener("click", async () => {
+    const current = await reg.pushManager.getSubscription();
+    if (current) { await post("/push/unsubscribe", current).catch(() => {}); await current.unsubscribe(); show(null); return; }
+    if (await Notification.requestPermission() !== "granted") {
+      btn.textContent = "Alerts are blocked — allow notifications for Nerd News in your settings";
+      return;
+    }
+    const raw = Uint8Array.from(atob(key.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
+    try {
+      const sub = await reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: raw});
+      await post("/push/subscribe", sub);
+      show(sub);
+    } catch (e) { btn.textContent = "Couldn't turn on alerts on this device"; }
+  });
+});
+</script>
 </head>
 <body class="share">
 <header>
   <h1>Nerd News</h1>
-  <div class="dateline">Friday, October 30, 2026 · last 7 days · updated 4:42 PM</div>
+  <div class="dateline">Friday, October 30, 2026 · last 7 days · updated 7:11 PM</div>
 </header>
 <nav>
 

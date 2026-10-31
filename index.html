@@ -144,6 +144,19 @@
 <meta property="og:image" content="https://lookupjosh.github.io/nerd-news/2026-10-31.png">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
+<script>
+(() => {
+  const day = "2026-10-31";
+  if (!/\/(index\.html)?$/.test(location.pathname)) return;   // dated pages stay as they are
+  const check = () => fetch("latest.json?t=" + Date.now(), {cache: "no-store"})
+    .then(r => r.json()).then(j => {
+      const key = "nn-reloaded-" + j.date;
+      if (j.date > day && !sessionStorage.getItem(key)) { sessionStorage.setItem(key, "1"); location.reload(); }
+    }).catch(() => {});
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
+  addEventListener("pageshow", check);
+})();
+</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -263,7 +276,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 <body class="share">
 <header>
   <h1>Nerd News</h1>
-  <div class="dateline">Saturday, October 31, 2026 · last 7 days · updated 6:02 AM</div>
+  <div class="dateline">Saturday, October 31, 2026 · last 7 days · updated 8:28 AM</div>
 </header>
 <nav>
 

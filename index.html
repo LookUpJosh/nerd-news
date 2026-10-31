@@ -248,9 +248,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const raw = Uint8Array.from(atob(key.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
     try {
       const sub = await reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: raw});
-      await post("/push/subscribe", sub);
+      const res = await post("/push/subscribe", sub);
+      if (!res.ok) throw new Error("not accepted");
       show(sub);
-    } catch (e) { btn.textContent = "Couldn't turn on alerts on this device"; }
+    } catch (e) {
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) await sub.unsubscribe();
+      btn.textContent = "Couldn't turn on alerts on this device";
+    }
   });
 });
 </script>
@@ -258,7 +263,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 <body class="share">
 <header>
   <h1>Nerd News</h1>
-  <div class="dateline">Friday, October 30, 2026 · last 7 days · updated 7:11 PM</div>
+  <div class="dateline">Friday, October 30, 2026 · last 7 days · updated 7:12 PM</div>
 </header>
 <nav>
 
